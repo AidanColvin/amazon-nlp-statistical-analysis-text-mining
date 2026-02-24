@@ -1,49 +1,62 @@
-# Itemset Mining: Amazon Review Text Analysis
+## # Itemset Mining: Amazon Review Text Analysis
 
-## Overview
-This repository contains three programming tasks. They focus on word association mining, feature selection for sentiment analysis, and spelling correction. All tasks use a collection of Amazon reviews and string similarity techniques.
+### ## Project Overview
 
----
-
-## Question 1: Word Association
-
-This module finds the top 100 word associations in a collection of Amazon reviews. It measures these associations using **pointwise mutual information (PMI)**.
-
-**Implemented Guidelines:**
-* Removes selected punctuation like commas and quotation marks.
-* Considers only ordered word pairs that appear within a fixed-size text window of 5 consecutive words.
-* Includes only word pairs that appear at least 50 times.
-* Computes the frequency of each word across the reviews.
-* Computes the frequency of each word pair across the reviews.
+This project implements a modular machine learning and natural language processing (NLP) pipeline. It utilizes Amazon review data to perform word association mining, sentiment-based feature selection, and string-similarity-based spelling correction. The system is designed for high performance using sparse matrices and automated workflows via a `Makefile`.
 
 ---
 
-## Question 2: Feature Selection
+### ## Core Modules
 
-This module finds 100 single words (unigrams) most associated with sentiment labels. It uses the **Chi-square** statistic to identify these associations.
+#### ### 1. Statistical Word Association
 
-**Details:**
-* Uses the label `1` for positive sentiment.
-* Uses the label `0` for negative sentiment.
-* Identifies which sentiment each word is strongly associated with.
-* Flags "mysterious" words that do not clearly associate with either positive or negative sentiment.
+Located in `src/word_association.py`, this module identifies significant relationships between words using **Pointwise Mutual Information (PMI)**.
+
+* **Text Normalization**: Filters specific punctuation and standardizes casing.
+* **Contextual Analysis**: Analyzes word pairs within a 5-word sliding window.
+* **Threshold Filtering**: Only processes pairs with a minimum frequency of 50 occurrences to ensure statistical significance.
+* **Output**: Identifies functional pairings (e.g., "customer service") and named entities.
+
+#### ### 2. Sentiment Feature Selection
+
+Located in `src/feature_selection.py`, this module extracts the top 100 unigrams most indicative of sentiment using the **Chi-square ($\chi^2$)** statistic.
+
+* **Label Mapping**: Correlates words with binary sentiment labels ($1$ for positive, $0$ for negative).
+* **Noise Reduction**: Utilizes stop-word filtering to remove non-informative "mysterious" words like "was" or "after."
+* **Association Logic**: Segregates high-value features into positive indicators (e.g., "excellent") and negative indicators (e.g., "disappointed").
+
+#### ### 3. Intelligent Spell Correction
+
+Located in `src/spell_correction.py`, this system provides orthographic corrections by comparing out-of-vocabulary strings against a dictionary.
+
+* **Algorithm Comparison**: Evaluates results using both **Jaccard Similarity** (via n-gram sets) and **Levenshtein Edit Distance**.
+* **Optimization**: Uses n-gram approximation ($O(m + n)$ complexity) to provide faster results than traditional edit distance ($O(m \times n)$).
+* **N-gram Analysis**: Supports bigrams through 5-grams; testing indicates bigrams (2-grams) offer the best balance of flexibility and similarity scoring.
+* **Scope**: Primary dictionary focuses on Wiktionary entries starting with the letter "a."
 
 ---
 
-## Question 3: Spell Correction
+### ## Installation & Usage
 
-This module implements a spelling correction system based on string similarity. It matches out-of-vocabulary strings to the closest word in a provided dictionary.
+#### ### Prerequisites
 
-**Background and Approximation:**
-A natural measure of string similarity is Levenshtein Edit Distance. The time complexity of edit distance is O(m * n) for strings of length m and n. This computation becomes expensive for long strings. To reduce computational cost, this system represents strings using overlapping n-grams.
+Ensure you have Python 3.13+ installed. The environment should include `scikit-learn`, `pandas`, `numpy`, `xgboost`, and `scipy`.
 
+#### ### Execution
 
+The entire pipeline is automated. Use the following commands in the terminal:
 
-Comparing n-gram sets provides high similarity accuracy while reducing the time complexity to O(m + n).
+* **Run Pipeline**: `make run` — Installs dependencies, builds features, and trains models.
+* **Clean Environment**: `make clean` — Removes processed data files to reset the pipeline.
 
-**Task Requirements:**
-* Uses a Wiktionary dictionary containing all words starting with "a".
-* Returns the top 10 most similar dictionary words for any input string using **Jaccard similarity**.
-* Processes specific input strings: `abreviation`, `abstrictiveness`, `accanthopterigious`, `artifitial inteligwnse`, and `agglumetation`.
-* Compares n-gram approximation results with Levenshtein edit distance results.
-* Experiments with different n-gram lengths, including bigrams (2-grams), trigrams (3-grams), 4-grams, and 5-grams.
+---
+
+### ## Technical Specifications
+
+* **Data Hierarchy**: Original data is stored in `data/raw/` to ensure immutability. All generated outputs and models are stored in `data/processed/`.
+* **Model Selection**: Includes Logistic Regression, SVM, Random Forest, XGBoost, Gradient Boosting, and Naive Bayes.
+* **Performance Tracking**: Generates a `model_comparison_report.csv` sorted by F1-Score to verify model accuracy.
+
+---
+
+**Would you like me to add a section to the README that explains the specific results of your model performance report?**
