@@ -3,9 +3,9 @@ from data_loader import load_reviews
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, accuracy_score, f1_score
-from xgboost import XGBClassifier
+from lightgbm import LGBMClassifier
 
-NAME = "xgboost"
+NAME = "xgboost-lgbm"
 OUT  = "data/processed"
 os.makedirs(OUT, exist_ok=True)
 
@@ -14,8 +14,7 @@ X_train, X_test, y_train, y_test = train_test_split(df["text"], df["label"], tes
 vec  = TfidfVectorizer(max_features=10000, sublinear_tf=True)
 Xtr  = vec.fit_transform(X_train)
 Xte  = vec.transform(X_test)
-model = XGBClassifier(n_estimators=300, learning_rate=0.1, max_depth=6,
-                      eval_metric="logloss", n_jobs=-1, random_state=42)
+model = LGBMClassifier(n_estimators=300, learning_rate=0.1, n_jobs=-1, random_state=42, verbose=-1)
 model.fit(Xtr, y_train)
 preds = model.predict(Xte)
 
