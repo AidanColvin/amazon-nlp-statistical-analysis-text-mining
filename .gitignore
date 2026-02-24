@@ -21,3 +21,4 @@ EOF.venv/
 *.parquet
 data/*.txt
 data/*.list
+amazon_review.txt
