@@ -2,7 +2,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.naive_bayes import MultinomialNB
-import xgboost as xgb
 
 def build_logistic_regression():
     # Takes nothing, initializes Logistic Regression model, returns model object
@@ -20,10 +19,6 @@ def build_gradient_boosting():
     # Takes nothing, initializes Gradient Boosting model, returns model object
     return GradientBoostingClassifier(n_estimators=100, random_state=42)
 
-def build_xgboost():
-    # Takes nothing, initializes XGBoost model, returns model object
-    return xgb.XGBClassifier(use_label_encoder=False, eval_metric='logloss', random_state=42)
-
 def build_naive_bayes():
     # Takes nothing, initializes Naive Bayes model, returns model object
     return MultinomialNB()
@@ -34,7 +29,6 @@ def get_all_models():
         "Logistic Regression": build_logistic_regression(),
         "Support Vector Machine": build_support_vector_machine(),
         "Random Forest": build_random_forest(),
-        "XGBoost": build_xgboost(),
         "Gradient Boosting": build_gradient_boosting(),
         "Naive Bayes": build_naive_bayes()
     }
