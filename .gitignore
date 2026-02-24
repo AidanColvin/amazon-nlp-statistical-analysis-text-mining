@@ -1,0 +1,23 @@
+cat << 'EOF' > .gitignore
+# Datasets
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Machine Learning Models and Matrices
+*.joblib
+*.npz
+*.npy
+*.csv
+
+# Python Caches
+__pycache__/
+*.pyc
+
+# Mac System Files
+.DS_Store
+EOF.venv/
+*.parquet
+data/*.txt
+data/*.list
