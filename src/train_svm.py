@@ -1,0 +1,23 @@
+import os, pandas as pd
+from data_loader import load_reviews
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.svm import LinearSVC
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import classification_report, accuracy_score, f1_score
+
+NAME = "svm"
+OUT  = "data/processed"
+os.makedirs(OUT, exist_ok=True)
+
+df = load_reviews()
+X_train, X_test, y_train, y_test = train_test_split(df["text"], df["label"], test_size=0.2, random_state=42)
+vec  = TfidfVectorizer(max_features=20000, ngram_range=(1,2), sublinear_tf=True)
+Xtr  = vec.fit_transform(X_train)
+Xte  = vec.transform(X_test)
+model = LinearSVC(max_iter=2000, C=1.0)
+model.fit(Xtr, y_train)
+preds = model.predict(Xte)
+
+pd.DataFrame({"id": X_test.index, "prediction": preds, "actual": y_test.values}).to_csv(f"{OUT}/{NAME}-submission.csv", index=False)
+pd.DataFrame(classification_report(y_test, preds, output_dict=True)).transpose().to_csv(f"{OUT}/{NAME}-classification-report.csv")
+print(f"[{NAME}] Accuracy={accuracy_score(y_test,preds):.4f}  F1={f1_score(y_test,preds):.4f}")
