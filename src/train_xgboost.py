@@ -1,20 +1,21 @@
-import os, pandas as pd
+import os, pandas as pd, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from data_loader import load_reviews
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, accuracy_score, f1_score
-from lightgbm import LGBMClassifier
 
-NAME = "xgboost-lgbm"
+NAME = "xgboost-hgb"
 OUT  = "data/processed"
 os.makedirs(OUT, exist_ok=True)
 
 df = load_reviews()
 X_train, X_test, y_train, y_test = train_test_split(df["text"], df["label"], test_size=0.2, random_state=42)
 vec  = TfidfVectorizer(max_features=10000, sublinear_tf=True)
-Xtr  = vec.fit_transform(X_train)
-Xte  = vec.transform(X_test)
-model = LGBMClassifier(n_estimators=300, learning_rate=0.1, n_jobs=-1, random_state=42, verbose=-1)
+Xtr  = vec.fit_transform(X_train).toarray()
+Xte  = vec.transform(X_test).toarray()
+model = HistGradientBoostingClassifier(max_iter=200, random_state=42)
 model.fit(Xtr, y_train)
 preds = model.predict(Xte)
 
