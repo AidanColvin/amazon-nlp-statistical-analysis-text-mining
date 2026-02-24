@@ -1,62 +1,187 @@
-## # Itemset Mining: Amazon Review Text Analysis
+```md
+# Itemset Mining & NLP Pipeline: Amazon Review Intelligence
 
-### ## Project Overview
-
-This project implements a modular machine learning and natural language processing (NLP) pipeline. It utilizes Amazon review data to perform word association mining, sentiment-based feature selection, and string-similarity-based spelling correction. The system is designed for high performance using sparse matrices and automated workflows via a `Makefile`.
-
----
-
-### ## Core Modules
-
-#### ### 1. Statistical Word Association
-
-Located in `src/word_association.py`, this module identifies significant relationships between words using **Pointwise Mutual Information (PMI)**.
-
-* **Text Normalization**: Filters specific punctuation and standardizes casing.
-* **Contextual Analysis**: Analyzes word pairs within a 5-word sliding window.
-* **Threshold Filtering**: Only processes pairs with a minimum frequency of 50 occurrences to ensure statistical significance.
-* **Output**: Identifies functional pairings (e.g., "customer service") and named entities.
-
-#### ### 2. Sentiment Feature Selection
-
-Located in `src/feature_selection.py`, this module extracts the top 100 unigrams most indicative of sentiment using the **Chi-square ($\chi^2$)** statistic.
-
-* **Label Mapping**: Correlates words with binary sentiment labels ($1$ for positive, $0$ for negative).
-* **Noise Reduction**: Utilizes stop-word filtering to remove non-informative "mysterious" words like "was" or "after."
-* **Association Logic**: Segregates high-value features into positive indicators (e.g., "excellent") and negative indicators (e.g., "disappointed").
-
-#### ### 3. Intelligent Spell Correction
-
-Located in `src/spell_correction.py`, this system provides orthographic corrections by comparing out-of-vocabulary strings against a dictionary.
-
-* **Algorithm Comparison**: Evaluates results using both **Jaccard Similarity** (via n-gram sets) and **Levenshtein Edit Distance**.
-* **Optimization**: Uses n-gram approximation ($O(m + n)$ complexity) to provide faster results than traditional edit distance ($O(m \times n)$).
-* **N-gram Analysis**: Supports bigrams through 5-grams; testing indicates bigrams (2-grams) offer the best balance of flexibility and similarity scoring.
-* **Scope**: Primary dictionary focuses on Wiktionary entries starting with the letter "a."
+> A high-performance, modular NLP pipeline for extracting semantic relationships, sentiment signals, and lexical corrections from large-scale Amazon review data.
 
 ---
 
-### ## Installation & Usage
+## Overview
 
-#### ### Prerequisites
+This project implements an end-to-end natural language processing (NLP) and machine learning pipeline designed to:
 
-Ensure you have Python 3.13+ installed. The environment should include `scikit-learn`, `pandas`, `numpy`, `xgboost`, and `scipy`.
+- Discover statistically significant word associations  
+- Identify sentiment-discriminative features  
+- Perform efficient, scalable spell correction  
 
-#### ### Execution
-
-The entire pipeline is automated. Use the following commands in the terminal:
-
-* **Run Pipeline**: `make run` — Installs dependencies, builds features, and trains models.
-* **Clean Environment**: `make clean` — Removes processed data files to reset the pipeline.
+The system emphasizes **modularity, computational efficiency, and reproducibility**, leveraging sparse representations and automated workflows via a `Makefile`.
 
 ---
 
-### ## Technical Specifications
+## Key Features
 
-* **Data Hierarchy**: Original data is stored in `data/raw/` to ensure immutability. All generated outputs and models are stored in `data/processed/`.
-* **Model Selection**: Includes Logistic Regression, SVM, Random Forest, XGBoost, Gradient Boosting, and Naive Bayes.
-* **Performance Tracking**: Generates a `model_comparison_report.csv` sorted by F1-Score to verify model accuracy.
+- Statistical Word Association Mining (PMI)  
+- Chi-Square-Based Sentiment Feature Selection  
+- Optimized Spell Correction (Jaccard + Levenshtein)  
+- Multi-model ML benchmarking pipeline  
+- Reproducible build system using Makefile  
+- Efficient handling of large text corpora via sparse matrices  
 
 ---
 
-**Would you like me to add a section to the README that explains the specific results of your model performance report?**
+## Architecture
+
+```
+data/
+├── raw/                # Immutable source data
+└── processed/          # Generated features, models, outputs
+
+src/
+├── word_association.py
+├── feature_selection.py
+└── spell_correction.py
+
+Makefile
+README.md
+```
+
+---
+
+## Core Components
+
+### 1. Word Association Mining (PMI)
+
+**Location:** `src/word_association.py`
+
+- Computes **Pointwise Mutual Information (PMI)** to detect meaningful word pair relationships  
+- Sliding window of **±5 tokens** for contextual co-occurrence  
+- Filters low-signal pairs using a **minimum frequency threshold (≥50)**  
+- Outputs semantically meaningful associations (e.g., `"customer" ↔ "service"`)  
+
+**Why it matters:**  
+Captures latent structure in language beyond simple frequency counts.
+
+---
+
+### 2. Sentiment Feature Selection (Chi-Square)
+
+**Location:** `src/feature_selection.py`
+
+- Uses **χ² (Chi-square statistic)** to identify top 100 sentiment-bearing unigrams  
+- Binary label mapping:
+  - `1` → Positive sentiment  
+  - `0` → Negative sentiment  
+- Applies stop-word filtering to remove non-informative tokens  
+- Produces interpretable feature sets:
+  - Positive: `"excellent"`, `"amazing"`  
+  - Negative: `"disappointed"`, `"waste"`  
+
+**Why it matters:**  
+Improves downstream model performance by isolating statistically relevant signals.
+
+---
+
+### 3. Intelligent Spell Correction
+
+**Location:** `src/spell_correction.py`
+
+- Hybrid similarity approach:
+  - **Jaccard Similarity (n-grams)**  
+  - **Levenshtein Edit Distance**  
+- Performance optimization:
+  - Jaccard: **O(m + n)**  
+  - Levenshtein: **O(m × n)**  
+- Supports **2–5 gram tokenization**  
+  - Empirically, **bigrams (2-grams)** provide best trade-off  
+- Dictionary scope: Wiktionary subset (terms starting with "a")  
+
+**Why it matters:**  
+Balances accuracy and computational efficiency for real-world NLP systems.
+
+---
+
+## Machine Learning Pipeline
+
+The pipeline evaluates multiple models for sentiment classification:
+
+- Logistic Regression  
+- Support Vector Machine (SVM)  
+- Random Forest  
+- Gradient Boosting  
+- XGBoost  
+- Naive Bayes  
+
+### Output
+
+- `model_comparison_report.csv`  
+  - Sorted by **F1-score**  
+  - Enables objective model benchmarking and selection  
+
+---
+
+## Installation
+
+### Prerequisites
+
+- Python **3.13+**
+
+### Required Libraries
+
+```bash
+pip install scikit-learn pandas numpy xgboost scipy
+```
+
+---
+
+## Usage
+
+### Run Full Pipeline
+
+```bash
+make run
+```
+
+Executes:
+
+* Dependency setup
+* Data preprocessing
+* Feature extraction
+* Model training & evaluation
+
+---
+
+### Reset Environment
+
+```bash
+make clean
+```
+
+Removes all generated artifacts in `data/processed/`.
+
+---
+
+## Design Principles
+
+* **Modularity** — Each component is independently testable and extensible
+* **Efficiency** — Sparse matrices and optimized algorithms reduce computational overhead
+* **Reproducibility** — Deterministic pipeline execution via Makefile
+* **Scalability** — Designed for large-scale text corpora
+
+---
+
+## Example Applications
+
+* Review sentiment analysis at scale
+* Keyword and phrase discovery for product insights
+* Data cleaning and preprocessing pipelines
+* Feature engineering for NLP classification tasks
+
+---
+
+## Future Enhancements
+
+* Expand dictionary coverage beyond "a"-prefixed entries
+* Integrate deep learning models (e.g., transformers)
+* Add real-time inference API
+* Incorporate phrase-level sentiment modeling
+
+---
