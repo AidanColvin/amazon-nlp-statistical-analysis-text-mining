@@ -1,4 +1,3 @@
-cat << 'EOF' > .gitignore
 # Datasets
 data/raw/*
 data/processed/*
@@ -15,10 +14,14 @@ data/processed/*
 __pycache__/
 *.pyc
 
-# Mac System Files
-.DS_Store
-EOF.venv/
+# Virtual Environments
+.venv/
+
+# Specific File Types
 *.parquet
 data/*.txt
 data/*.list
 amazon_review.txt
+
+# Mac System Files
+.DS_Store
