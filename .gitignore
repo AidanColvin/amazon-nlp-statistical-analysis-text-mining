@@ -25,3 +25,4 @@ amazon_review.txt
 
 # Mac System Files
 .DS_Store
+data/
