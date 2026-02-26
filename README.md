@@ -1,4 +1,4 @@
-# Amazon NLP: Itemset Mining & Statistical Text Analysis
+# Amazon Reviews NLP: Itemset Mining & Statistical Text Analysis
 
 [![Python](https://img.shields.io/badge/Python-3.13%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-F7931E?logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
